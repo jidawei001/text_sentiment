@@ -2,6 +2,7 @@
 from flask import Flask,render_template,request
 import google.generativeai as palm
 import os
+import numpy as np
 
 api = os.getenv("MAKERSUITE_API_TOKEN")
 model = {"model":"models/chat-bison-001"}
@@ -43,9 +44,12 @@ def creditability():
     return(render_template("creditability.html"))
 
 @app.route("/creditability_prediction",methods=["GET","POST"])
-def creditabiity_prediction():
+def creditability_prediction():
     q = float(request.form.get("q"))
-    return(render_template("credictability_prediction.html",r=1.22937616 + (-0.00011189*q)))
+    r=1.22937616 + (-0.00011189*q)
+    r = np.where(r >= 0.5, "yes","no")
+    r = str(r)
+    return(render_template("creditability_prediction.html",r=r))
 
 @app.route("/makersuite",methods=["GET","POST"])
 def makersuite():
